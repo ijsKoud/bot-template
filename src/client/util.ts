@@ -1,21 +1,16 @@
 import Client from "./client";
-import { TextChannel, User, Collection, MessageAttachment } from "discord.js";
-import { Guild } from "discord.js";
-import { GuildMember } from "discord.js";
+import {
+	TextChannel,
+	User,
+	Collection,
+	MessageAttachment,
+	Role,
+	GuildMember,
+	Guild,
+} from "discord.js";
 
 export default class util {
 	public constructor(private client: Client) {}
-
-	// public functions
-	public emojiFinder(name: string): string {
-		return (
-			this.client.guilds.cache
-				.get("746536046275198997")
-				.emojis.cache.find((e) => e.name === name)
-				?.toString() || "emoji"
-		);
-	}
-
 	public formatPerms(perms: string[]): string {
 		if (!Array.isArray(perms) || perms.length === 0) return "`―`";
 
@@ -33,31 +28,36 @@ export default class util {
 			: `\`${formattedPerms[0]}\``;
 	}
 
+	public getDate(date: number): string {
+		return new Date(date).toLocaleString("en-GB", { timeZone: "UTC" });
+	}
+
 	public async getChannel(id: string): Promise<TextChannel> {
-		return (this.client.channels.cache.get(id) ||
-			(await this.client.channels.fetch(id).catch((e) => null))) as TextChannel;
+		return id
+			? ((this.client.util.resolveChannel(id, this.client.channels.cache, false, true) ||
+					(await this.client.channels.fetch(id).catch((e) => null))) as TextChannel)
+			: null;
 	}
 
 	public async fetchUser(id: string): Promise<User> {
-		let user: User = null;
-
-		if (!isNaN(Number(id)))
-			user =
-				this.client.users.cache.get(id) ||
-				(await this.client.users.fetch(id, true).catch((e) => null));
-		else user = this.client.util.resolveUser(id, this.client.users.cache, false, false);
-
-		return user || null;
+		return id
+			? this.client.util.resolveUser(id, this.client.users.cache, false, false) ||
+					(await this.client.users.fetch(id, true).catch((e) => null))
+			: null;
 	}
 
 	public async fetchMember(id: string, guild: Guild): Promise<GuildMember> {
-		let member: GuildMember = null;
+		return guild && id
+			? this.client.util.resolveMember(id, guild.members.cache, false, false) ||
+					(await guild.members.fetch(id).catch((e) => null))
+			: null;
+	}
 
-		if (!isNaN(Number(id)))
-			member = guild.members.cache.get(id) || (await guild.members.fetch(id).catch((e) => null));
-		else member = this.client.util.resolveMember(id, guild.members.cache, false, false);
-
-		return member || null;
+	public async getRole(id: string, guild: Guild): Promise<Role> {
+		return guild && id
+			? this.client.util.resolveRole(id, guild.roles.cache, false, false) ||
+					(await guild.roles.fetch(id).catch((e) => null))
+			: null;
 	}
 
 	public trimArray(arr: Array<string>, maxLen = 10) {

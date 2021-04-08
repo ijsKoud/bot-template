@@ -104,7 +104,10 @@ export default class Client extends AkairoClient {
 				this.log(LogLevel.WARN, `Disconnected from **${connection.name}**! Reconnecting...`)
 			)
 			.on("error", (error: Error) =>
-				this.log(LogLevel.ERROR, `New error - **${connection.name}** - Error: \`${error.message}\``)
+				this.log(
+					LogLevel.ERROR,
+					`New error - **${connection.name}** - Error: \`${error.stack || error.message}\``
+				)
 			);
 	}
 
