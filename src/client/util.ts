@@ -1,16 +1,30 @@
-import Client from "./client";
+import prClient from "./client";
 import {
 	TextChannel,
 	User,
 	Collection,
 	MessageAttachment,
+	CollectorFilter,
+	Message,
+	Guild,
 	Role,
 	GuildMember,
-	Guild,
+	AwaitMessagesOptions,
+	AwaitReactionsOptions,
+	MessageReaction,
 } from "discord.js";
 
 export default class util {
-	public constructor(private client: Client) {}
+	public constructor(private client: prClient) {}
+	public emojiFinder(name: string): string {
+		return (
+			this.client.guilds.cache
+				.get("746536046275198997")
+				.emojis.cache.find((e) => e.name === name)
+				?.toString() || "emoji"
+		);
+	}
+
 	public formatPerms(perms: string[]): string {
 		if (!Array.isArray(perms) || perms.length === 0) return "`―`";
 
@@ -30,6 +44,27 @@ export default class util {
 
 	public getDate(date: number): string {
 		return new Date(date).toLocaleString("en-GB", { timeZone: "UTC" });
+	}
+
+	public async awaitReactions(
+		message: Message,
+		filter: CollectorFilter,
+		options: AwaitReactionsOptions = { max: 1, time: 6e4, errors: ["time"] }
+	): Promise<Collection<string, MessageReaction>> {
+		return await message
+			.awaitReactions(filter, options)
+			.catch((e) => new Collection<string, MessageReaction>());
+	}
+
+	public async awaitMessages(
+		message: Message,
+		filter: CollectorFilter,
+		options: AwaitMessagesOptions = { max: 1, time: 6e4, errors: ["time"] }
+	): Promise<Collection<string, Message>> {
+		const coll = await message.channel
+			.awaitMessages(filter, options)
+			.catch((e) => new Collection<string, Message>());
+		return coll;
 	}
 
 	public async getChannel(id: string): Promise<TextChannel> {
