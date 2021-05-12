@@ -23,14 +23,10 @@ export default class helpCommand extends Command {
 
 	async exec(message: Message, { command }: { command: Command }) {
 		const embed = new MessageEmbed()
-			.setColor(message.member?.displayHexColor || "#9298F4")
-			.setThumbnail(
-				message.guild?.iconURL({ dynamic: true, size: 4096 }) ||
-					message.author.displayAvatarURL({ dynamic: true, size: 4096 })
-			)
+			.setColor("#6F86D4")
 			.setFooter(
-				`${this.client.user.username} - created by DaanGamesDG#7621`,
-				this.client.user.displayAvatarURL({ dynamic: true, size: 4096 })
+				`Discord bot created using template created by DaanGamesDG#7621`,
+				this.client.user!.displayAvatarURL({ dynamic: true, size: 4096 })
 			)
 			.setTitle(`Help Command - ${message.author.tag}`);
 
@@ -59,7 +55,6 @@ export default class helpCommand extends Command {
 					!this.client.isOwner(message.author.id)
 				)
 					continue;
-
 				embed.addField(
 					`• ${category.id}`,
 					"`" +
@@ -79,6 +74,6 @@ export default class helpCommand extends Command {
 			}
 		}
 
-		await message.util.send(embed);
+		await message.util!!.send(embed);
 	}
 }

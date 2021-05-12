@@ -33,12 +33,15 @@ export default class evalCommand extends Command {
 			const stop = process.hrtime(start);
 
 			const input: string = code;
-			const output: string = this.clean(inspect(evaled, { depth: 0 }), this.client.token) as string;
+			const output: string = this.clean(
+				inspect(evaled, { depth: 0 }),
+				this.client.token!
+			) as string;
 			const timeTaken: number = (stop[0] * 1e9 + stop[1]) / 1e6;
 
 			if (input.length > 1024 || output.length > 1024 || timeTaken.toString().length > 1024) {
 				const total = [input, output, timeTaken].join("\n");
-				return message.util.send(new MessageAttachment(Buffer.from(total), "evaluated.txt"));
+				return message.util!.send(new MessageAttachment(Buffer.from(total), "evaluated.txt"));
 			} else {
 				const embed: MessageEmbed = new MessageEmbed()
 					.setTitle(`Evaluated code | ${message.author.tag}`)
@@ -47,11 +50,11 @@ export default class evalCommand extends Command {
 					.addField("**❯ Time Taken**:", `\`\`\`${timeTaken}ms \`\`\``)
 					.setColor(message.member?.displayHexColor || "BLUE");
 
-				return message.util.send(embed);
+				return message.util!.send(embed);
 			}
 		} catch (e) {
-			return message.util.send(
-				`> ❌ | Error:  \n\`\`\`xl\n${this.clean(e.message, this.client.token)}\n\`\`\``
+			return message.util!.send(
+				`> ❌ | Error:  \n\`\`\`xl\n${this.clean(e.message, this.client.token!)}\n\`\`\``
 			);
 		}
 	}

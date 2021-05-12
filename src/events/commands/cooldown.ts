@@ -11,6 +11,6 @@ export default class cooldownListener extends Listener {
 	}
 
 	exec(message: Message, command: Command, remaining: number) {
-		message.util.send(`>>> ⌚ | Cooldown is active, please try again after \`${ms(remaining)}\`.`);
+		message.util!.send(`>>> ⌚ | Cooldown is active, please try again after \`${ms(remaining)}\`.`);
 	}
 }

@@ -20,7 +20,7 @@ export default class util {
 		return (
 			this.client.guilds.cache
 				.get("746536046275198997")
-				.emojis.cache.find((e) => e.name === name)
+				?.emojis.cache.find((e) => e.name === name)
 				?.toString() || "emoji"
 		);
 	}
@@ -67,28 +67,28 @@ export default class util {
 		return coll;
 	}
 
-	public async getChannel(id: string): Promise<TextChannel> {
+	public async getChannel(id: string): Promise<TextChannel | null> {
 		return id
 			? ((this.client.util.resolveChannel(id, this.client.channels.cache, false, true) ||
 					(await this.client.channels.fetch(id).catch((e) => null))) as TextChannel)
 			: null;
 	}
 
-	public async fetchUser(id: string): Promise<User> {
+	public async fetchUser(id: string): Promise<User | null> {
 		return id
 			? this.client.util.resolveUser(id, this.client.users.cache, false, false) ||
 					(await this.client.users.fetch(id, true).catch((e) => null))
 			: null;
 	}
 
-	public async fetchMember(id: string, guild: Guild): Promise<GuildMember> {
+	public async fetchMember(id: string, guild: Guild): Promise<GuildMember | null> {
 		return guild && id
 			? this.client.util.resolveMember(id, guild.members.cache, false, false) ||
 					(await guild.members.fetch(id).catch((e) => null))
 			: null;
 	}
 
-	public async getRole(id: string, guild: Guild): Promise<Role> {
+	public async getRole(id: string, guild: Guild): Promise<Role | null> {
 		return guild && id
 			? this.client.util.resolveRole(id, guild.roles.cache, false, false) ||
 					(await guild.roles.fetch(id).catch((e) => null))

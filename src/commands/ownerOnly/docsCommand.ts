@@ -29,15 +29,15 @@ export default class docs extends Command {
 			const embed = await data.json();
 
 			if (!embed || embed.error)
-				return message.util.send(
+				return message.util!.send(
 					`> ${this.client.utils.emojiFinder(
 						"djslogo"
 					)} | Sorry, "${query}" couldn't be located within the Discord.js documentation. (https://discord.js.org/)`
 				);
 
-			return message.util.send({ embed });
+			return message.util!.send({ embed });
 		} catch (e) {
-			return message.util.send(e, { split: true, code: true });
+			return message.util!.send(e, { split: true, code: true });
 		}
 	}
 }

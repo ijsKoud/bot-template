@@ -21,19 +21,19 @@ export default class bwhitelistCommand extends Command {
 		if (!user) {
 			const guild =
 				this.client.guilds.cache.get(id) || (await this.client.guilds.fetch(id).catch((e) => null));
-			if (!guild) return message.util.send("No user/guild found.");
+			if (!guild) return message.util!.send("No user/guild found.");
 
 			const blacklist = await botBlacklist.findOne({ guildId: guild.id });
-			if (!blacklist) return message.util.send("Guild is already whitelisted");
+			if (!blacklist) return message.util!.send("Guild is already whitelisted");
 
 			await blacklist.deleteOne();
-			return message.util.send(`Successfully whitelisted **${guild.name}** (${guild.id})`);
+			return message.util!.send(`Successfully whitelisted **${guild.name}** (${guild.id})`);
 		}
 
 		const blacklist = await botBlacklist.findOne({ userId: user.id });
-		if (!blacklist) return message.util.send("User is already whitelisted");
+		if (!blacklist) return message.util!.send("User is already whitelisted");
 
 		await blacklist.deleteOne();
-		message.util.send(`Successfully whitelist **${user.tag}** (${user.toString()})`);
+		message.util!.send(`Successfully whitelist **${user.tag}** (${user.toString()})`);
 	}
 }

@@ -17,10 +17,10 @@ export default class missingPermissionsListener extends Listener {
 		missing: PermissionString[]
 	) {
 		const users = {
-			client: this.client.user.tag,
+			client: this.client.user!.tag,
 			user: message.author.tag,
 		};
-		await message.util.send(
+		await message.util!.send(
 			`>>> 👮‍♂️ | Oops, **${users[type]}** missing the following permissions for \`${
 				command.id
 			}\`: ${this.client.utils.formatPerms(missing)}.`

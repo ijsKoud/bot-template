@@ -5,8 +5,10 @@ import { join } from "path";
 import util from "./util";
 import moment from "moment";
 
+import * as config from "../config";
+
 import { Logger, LogLevel } from "@dimensional-fun/logger";
-const logger = new Logger("project name here");
+const logger = new Logger(config.name);
 
 // declare
 declare module "discord-akairo" {
@@ -16,6 +18,7 @@ declare module "discord-akairo" {
 		listenerHandler: ListenerHandler;
 
 		utils: util;
+		config: typeof config;
 
 		log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void;
 	}
@@ -23,8 +26,9 @@ declare module "discord-akairo" {
 
 // client
 export default class Client extends AkairoClient {
-	private wb: WebhookClient = new WebhookClient(process.env.WB_ID, process.env.WB_TOKEN);
+	private wb: WebhookClient = new WebhookClient(process.env.WB_ID!, process.env.WB_TOKEN!);
 	public utils: util = new util(this);
+	public config = config;
 
 	public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
 		directory: join(__dirname, "..", "inhibitors"),
@@ -62,9 +66,9 @@ export default class Client extends AkairoClient {
 		ignorePermissions: this.ownerID,
 		ignoreCooldown: this.ownerID,
 	});
-	public constructor({ ownerID }: { ownerID: string[] }) {
+	public constructor() {
 		super({
-			ownerID,
+			ownerID: config.owners,
 			disableMentions: "everyone",
 		});
 	}
@@ -83,7 +87,7 @@ export default class Client extends AkairoClient {
 	}
 
 	private connect(): void {
-		connect(process.env.DB, {
+		connect(process.env.DB!, {
 			useCreateIndex: true,
 			useNewUrlParser: true,
 			useUnifiedTopology: true,
@@ -124,6 +128,8 @@ export default class Client extends AkairoClient {
 			}**): ${msg}`,
 			{ split: true }
 		);
+
+		// @ts-ignore
 		logger[type.toLowerCase()](msg.replace(/`/g, "").replace(/\*/g, ""));
 	}
 }

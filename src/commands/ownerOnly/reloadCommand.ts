@@ -17,12 +17,12 @@ export default class reload extends Command {
 
 	async exec(message: Message, { command }: { command: Command }) {
 		if (!command)
-			return message.util.send(
+			return message.util!.send(
 				`>>> ${this.client.utils.emojiFinder("terminalicon")} | No command found.`
 			);
 		command.reload();
 		this.client.log("INFO", `**${command.id}** command reloaded!`);
-		return message.util.send(
+		return message.util!.send(
 			`>>> ${this.client.utils.emojiFinder("terminalicon")} | **${command.id}** command reloaded!`
 		);
 	}
