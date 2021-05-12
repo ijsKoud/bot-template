@@ -5,10 +5,8 @@ import { join } from "path";
 import util from "./util";
 import moment from "moment";
 
-import * as config from "../config";
-
 import { Logger, LogLevel } from "@dimensional-fun/logger";
-const logger = new Logger(config.name);
+const logger = new Logger("Project name here");
 
 // declare
 declare module "discord-akairo" {
@@ -18,7 +16,6 @@ declare module "discord-akairo" {
 		listenerHandler: ListenerHandler;
 
 		utils: util;
-		config: typeof config;
 
 		log(type: "DEBUG" | "ERROR" | "INFO" | "SILLY" | "TRACE" | "WARN", msg: string): void;
 	}
@@ -28,7 +25,6 @@ declare module "discord-akairo" {
 export default class Client extends AkairoClient {
 	private wb: WebhookClient = new WebhookClient(process.env.WB_ID!, process.env.WB_TOKEN!);
 	public utils: util = new util(this);
-	public config = config;
 
 	public inhibitorHandler: InhibitorHandler = new InhibitorHandler(this, {
 		directory: join(__dirname, "..", "inhibitors"),
@@ -66,9 +62,9 @@ export default class Client extends AkairoClient {
 		ignorePermissions: this.ownerID,
 		ignoreCooldown: this.ownerID,
 	});
-	public constructor() {
+	public constructor({ owners }: { owners: string[] }) {
 		super({
-			ownerID: config.owners,
+			ownerID: owners,
 			disableMentions: "everyone",
 		});
 	}

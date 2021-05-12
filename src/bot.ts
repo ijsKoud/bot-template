@@ -2,4 +2,4 @@ import { config } from "dotenv";
 import Client from "./client/client";
 config();
 
-new Client().start();
+new Client({ owners: ["304986851310043136"] }).start();
