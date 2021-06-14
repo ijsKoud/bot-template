@@ -1,27 +1,29 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es2018",
-		"outDir": "dist",
-		"lib": [
-			"ESNext",
-			"ESNext.Array",
-			"ESNext.AsyncIterable",
-			"ESNext.Intl",
-			"ESNext.Symbol",
-			"DOM"
-		],
-		"sourceMap": false,
-		"inlineSourceMap": true,
-		"inlineSources": true,
-		"incremental": true,
-		"esModuleInterop": true,
-		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true,
-		"resolveJsonModule": true,
+		"lib": ["ES2020"],
+		"target": "ES2020",
+		"module": "CommonJS",
 		"skipLibCheck": true,
-		"strict": true
+		"incremental": false,
+		"inlineSourceMap": true,
+		"declaration": false,
+		"allowJs": true,
+		"outDir": "./dist",
+		"strict": true,
+		"noImplicitAny": true,
+		"strictNullChecks": true,
+		"strictBindCallApply": true,
+		"strictPropertyInitialization": true,
+		"noImplicitThis": true,
+		"alwaysStrict": true,
+		"noFallthroughCasesInSwitch": true,
+		"pretty": true,
+		"experimentalDecorators": true,
+		"types": ["node"],
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"esModuleInterop": true
 	},
-	"include": ["src/**/*"],
-	"exclude": ["node_modules"]
+	"exclude": ["./node_modules"],
+	"include": ["./src/**/*"]
 }

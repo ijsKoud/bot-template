@@ -1,0 +1,22 @@
+{
+	"env": {
+		"es2020": true,
+		"node": true
+	},
+	"extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended"],
+	"plugins": ["@typescript-eslint"],
+	"parser": "@typescript-eslint/parser",
+	"parserOptions": {
+		"ecmaVersion": 11,
+		"sourceType": "module"
+	},
+	"rules": {
+		"indent": ["error", "tab", 2],
+		"quotes": ["error", "double"],
+		"semi": ["error", "always"],
+		"no-unused-vars": ["warn"],
+		"no-return-await": ["error"],
+		"no-unreachable": ["error"],
+		"no-unused-expressions": ["warn"]
+	}
+}
