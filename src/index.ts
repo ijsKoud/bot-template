@@ -2,18 +2,15 @@ import { config } from "dotenv";
 config();
 
 import Client from "./client/Client";
-
-const owners = process.env.OWNERS?.split(" ") ?? [];
-
 new Client({
+	owners: process.env.OWNERS?.split(" ") ?? [],
 	intents: ["GUILDS", "GUILD_MESSAGES"],
-	partials: [],
 	debug: !!process.env.DEBUG,
+	partials: [],
 	activity: [
 		{
 			type: "LISTENING",
 			name: "DaanGamesDG",
 		},
 	],
-	owners,
 }).start();
