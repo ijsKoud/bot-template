@@ -14,7 +14,6 @@ import * as constants from "./constants";
 import BlacklistManager from "./structures/BlacklistManager";
 import { PrismaClient } from "@prisma/client";
 
-// eslint-disable-next-line no-shadow
 export default class Client extends SapphireClient {
 	public owners: string[];
 	public constants = constants;
@@ -78,7 +77,7 @@ interface ClientOptions {
 }
 
 declare module "@sapphire/framework" {
-	// eslint-disable-next-line no-shadow
+	// eslint-disable-next-line @typescript-eslint/no-shadow
 	class SapphireClient {
 		owners: string[];
 		constants: typeof constants;
