@@ -9,6 +9,12 @@ export default class BlacklistManager {
 		return this.blacklisted.includes(userId) || this.blacklisted.includes(guildId);
 	}
 
+	public async blacklist(id: string): Promise<void> {
+		if (this.blacklisted.includes(id)) return;
+		this.blacklisted.push(id);
+		await this.client.prisma.botBlacklist.create({ data: { id } });
+	}
+
 	public setBlacklisted(blacklisted: string[]): this {
 		this.blacklisted = blacklisted;
 
