@@ -15,6 +15,12 @@ export default class BlacklistManager {
 		await this.client.prisma.botBlacklist.create({ data: { id } });
 	}
 
+	public async whitelist(id: string): Promise<void> {
+		if (!this.blacklisted.includes(id)) return;
+		this.blacklisted = this.blacklisted.filter((x) => x !== id);
+		await this.client.prisma.botBlacklist.delete({ where: { id } });
+	}
+
 	public setBlacklisted(blacklisted: string[]): this {
 		this.blacklisted = blacklisted;
 
