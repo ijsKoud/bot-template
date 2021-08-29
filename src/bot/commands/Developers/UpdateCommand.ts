@@ -33,6 +33,8 @@ export default class UpdateCommand extends Command {
 			await this.Exec("yarn install");
 		}
 
+		await this.Exec("npm build");
+
 		if (restart) {
 			await msg.edit(">>> 🤖 | Update Command**\nBot is updated - restarting...");
 			return process.exit(0);
