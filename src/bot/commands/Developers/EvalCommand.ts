@@ -15,7 +15,7 @@ import { inspect } from "util";
 	usage: "<code>",
 })
 export default class EvalCommand extends Command {
-	public async MessageRun(message: Message, args: args: Command.Args) {
+	public async MessageRun(message: Message, args: Command.Args) {
 		const code = await args.rest("string");
 
 		const { result, success, type } = await this.eval(message, code, {
