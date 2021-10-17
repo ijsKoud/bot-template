@@ -81,3 +81,32 @@ interface ClientOptions {
 	status?: PresenceStatusData | undefined;
 	debug?: boolean;
 }
+
+declare module "@sapphire/framework" {
+	// eslint-disable-next-line @typescript-eslint/no-shadow
+	class SapphireClient {
+		owners: string[];
+		isOwner(id: string): boolean;
+
+		prisma: PrismaClient;
+		utils: Utils;
+
+		blacklistManager: BlacklistManager;
+
+		loggers: Collection<string, Logger>;
+		multipliers: Collection<string, number>;
+	}
+
+	interface Preconditions {
+		OwnerOnly: never;
+		Blacklisted: never;
+		PremiumOnly: never;
+
+		// staff preconditions
+		CetOnly: never;
+		TrialModeratorOnly: never;
+		ModeratorOnly: never;
+		ManagerOnly: never;
+		SeniorOnly: never;
+	}
+}

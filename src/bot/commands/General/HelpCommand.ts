@@ -2,7 +2,6 @@ import { Command } from "../../../client/structures/Command";
 import { ApplyOptions } from "@sapphire/decorators";
 import { EmbedFieldData, Message, MessageEmbed } from "discord.js";
 import ms from "ms";
-import { Args } from "@sapphire/framework";
 
 @ApplyOptions<Command.Options>({
 	name: "help",
@@ -11,11 +10,18 @@ import { Args } from "@sapphire/framework";
 	usage: "[command]",
 })
 export default class PingCommand extends Command {
-	public async MessageRun(message: Message, args: Args, context: Command.Context): Promise<void> {
+	public async MessageRun(
+		message: Message,
+		args: Command.Args,
+		context: Command.Context
+	): Promise<void> {
 		const embed: MessageEmbed = this.container.client.utils
 			.embed()
 			.setTitle(`Help Command - ${message.author.tag}`)
-			.setFooter("Bot created by DaanGamesDG#7621", "https://cdn.daangamesdg.wtf/discord/pfp.gif");
+			.setFooter(
+				"Bot created by DaanGamesDG#7621",
+				"https://static.daangamesdg.xyz/discord/pfp.gif"
+			);
 
 		const cmd = await args.pickResult("string");
 		const command = this.container.stores.get("commands").get(cmd.value ?? "") as
@@ -42,7 +48,7 @@ export default class PingCommand extends Command {
 		} else {
 			const isOwner = this.container.client.isOwner(message.author.id);
 			const commands = [...this.container.stores.get("commands").values()] as Command[];
-			let categories = [...new Set(commands.map((c) => c.category))];
+			let categories = [...new Set(commands.map((c) => c.category ?? "default"))];
 
 			if (!isOwner) categories = categories.filter((c) => c.toLowerCase() !== "dev");
 

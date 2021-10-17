@@ -12,13 +12,14 @@ import { Command } from "../../../client/structures/Command";
 import { RESTJSONErrorCodes } from "discord-api-types/v9";
 import { ApplyOptions } from "@sapphire/decorators";
 import { codeBlock } from "@sapphire/utilities";
+import { emojis } from "../../../client/constants";
 
 const ignoredCodes = [RESTJSONErrorCodes.UnknownChannel, RESTJSONErrorCodes.UnknownMessage];
 
 @ApplyOptions<ListenerOptions>({ once: false, event: "commandError" })
 export class UserListener extends Listener {
 	public async run(error: Error, { message, piece, args }: CommandErrorPayload) {
-		const errorEmoji = this.container.client.constants.emojis.error;
+		const errorEmoji = emojis.error;
 
 		// If string || UserError, send to user
 		if (typeof error === "string") return message.reply(`>>> ${errorEmoji} | ${error}`);
@@ -54,7 +55,7 @@ export class UserListener extends Listener {
 		}
 
 		const command = piece as Command;
-		logger.fatal(`[COMMAND] ${command.path}\n${error.stack || error.message}`);
+		logger.fatal(`[COMMAND] ${command.location.relative}\n${error.stack || error.message}`);
 
 		try {
 			return message.reply(this.generateUnexpectedErrorMessage(args, error));
@@ -79,7 +80,7 @@ export class UserListener extends Listener {
 		if (this.container.client.owners.includes(args.message.author.id))
 			return codeBlock("js", error.stack ?? error.message);
 
-		return `>>> ${this.container.client.constants.emojis.error} | Oh no, this doesn't look very good.\n**Error**: \`${error.message}\`\nIf this keeps happening, please DM the developer of this bot.`;
+		return `>>> ${emojis.error} | Oh no, this doesn't look very good.\n**Error**: \`${error.message}\`\nIf this keeps happening, please DM the developer of this bot.`;
 	}
 
 	private getWarnError(message: Message) {
