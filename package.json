@@ -12,7 +12,7 @@
 		"@sapphire/decorators": "^3.1.1",
 		"@sapphire/framework": "^2.0.0",
 		"@sapphire/plugin-subcommands": "^2.0.0",
-		"@sapphire/type": "^2.1.0",
+		"@sapphire/type": "^2.1.1",
 		"@types/ms": "^0.7.31",
 		"@types/node": "^16.3.1",
 		"@typescript-eslint/eslint-plugin": "^5.0.0",
