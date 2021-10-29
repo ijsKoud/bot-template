@@ -1,27 +1,47 @@
 import {
 	AwaitMessageComponentOptions,
 	AwaitMessagesOptions,
+	ButtonInteraction,
 	Channel,
 	Collection,
 	DMChannel,
-	Emoji,
 	Guild,
-	GuildChannel,
-	GuildMember,
+	GuildMemberRoleManager,
+	Interaction,
 	Message,
+	MessageActionRow,
 	MessageAttachment,
+	MessageButton,
 	MessageComponentInteraction,
 	MessageEmbed,
 	MessageEmbedOptions,
 	PermissionResolvable,
 	PermissionString,
-	Role,
-	User,
 } from "discord.js";
+import ms from "ms";
 import Client from "./Client";
 
 export default class Utils {
 	constructor(public client: Client) {}
+
+	public formatTime(time: number | string, type: "t" | "T" | "d" | "D" | "f" | "F" | "R"): string {
+		return `<t:${time}:${type}>`;
+	}
+
+	public getColour(manager: GuildMemberRoleManager) {
+		return manager.hoist && manager.hoist.color > 0
+			? manager.hoist.hexColor
+			: manager.cache.filter((r) => r.color > 0).first()?.hexColor ?? "#fff";
+	}
+
+	public parseTime(time: string): number {
+		const permanent = ["p", "perm", "permanent"];
+
+		time = time.toLowerCase();
+		if (permanent.includes(time)) return 0;
+
+		return ms(time);
+	}
 
 	public formatPerms(perms: PermissionString[] | PermissionResolvable): string {
 		if (!Array.isArray(perms) || perms.length === 0) return "`―`";
@@ -49,72 +69,134 @@ export default class Utils {
 	}
 
 	public async getChannel(id: string): Promise<Channel | null> {
+		const resolve = () => {
+			const { cache } = this.client.channels;
+			return (
+				cache.get(id) ||
+				cache.find((channel) =>
+					"name" in channel
+						? (channel as Channel & { name: string }).name === id || channel.toString() === id
+						: channel.toString() === id
+				)
+			);
+		};
+
 		return typeof id === "string"
-			? this._resolve(this.client.channels.cache, id) ||
-					(await this.client.channels.fetch(id).catch(() => null))
+			? resolve() || (await this.client.channels.fetch(id).catch(() => null))
 			: null;
 	}
 
 	public async getRole(id: string, guild: Guild) {
+		const resolve = () => {
+			const { cache } = guild.roles;
+			return cache.get(id) || cache.find((role) => role.name === id || role.toString() === id);
+		};
+
+		if (id.toLowerCase() === "everyone") id = guild.id;
+
 		return typeof id === "string" && guild instanceof Guild
-			? this._resolve(guild.roles.cache, id) || (await guild.roles.fetch(id).catch(() => null))
+			? resolve() || (await guild.roles.fetch(id).catch(() => null))
 			: null;
 	}
 
-	public async fetchMember(id: string, guild: Guild) {
+	public async fetchMember(id: string, guild: Guild | null | undefined) {
+		const resolve = () => {
+			if (!guild) return undefined;
+
+			const { cache } = guild.members;
+			return (
+				cache.get(id) ||
+				cache.find(
+					(member) =>
+						member.nickname === id ||
+						member.toString() === id ||
+						member.user.tag === id ||
+						member.user.username === id ||
+						member.user.toString() === id
+				)
+			);
+		};
+
 		return typeof id === "string" && guild instanceof Guild
-			? this._resolve(guild.members.cache, id) || (await guild.members.fetch(id).catch(() => null))
+			? resolve() || (await guild.members.fetch(id).catch(() => null))
 			: null;
 	}
 
 	public async fetchUser(id: string) {
-		return typeof id === "string"
-			? this._resolve(this.client.users.cache, id) ||
-					(await this.client.users.fetch(id).catch(() => null))
-			: null;
-	}
-
-	protected _resolve<T extends GuildMember | User | Channel | Guild | Emoji | Role>(
-		cache: Collection<string, T>,
-		id: string
-	): T | null {
-		const check = (item: T): boolean => {
-			let bool = false;
-			if (!(item instanceof Guild)) {
-				const reg = this._regex(item);
-				const match = id.match(reg);
-
-				bool = (bool || (match && match[1] === item.id)) ?? false;
-			}
-
-			if (!(item instanceof Channel && this.isDM(item))) {
-				const i = item as User | GuildChannel | Guild | Emoji | Role;
-				const name = (i instanceof User ? i.tag : i.name)?.toLowerCase();
-
-				if (name) bool = bool || name === id || name.includes(id);
-				else bool = bool ?? false;
-			}
-
-			return bool;
+		const resolve = () => {
+			const { cache } = this.client.users;
+			return (
+				cache.get(id) ||
+				cache.find((user) => user.tag === id || user.username === id || user.toString() === id)
+			);
 		};
 
-		return (
-			cache.get(id) ?? cache.find((v) => check(v)) ?? cache.find((v) => v.toString() === id) ?? null
-		);
+		return typeof id === "string"
+			? resolve() || (await this.client.users.fetch(id).catch(() => null))
+			: null;
 	}
 
 	public isDM(channel: Channel): channel is DMChannel {
 		return ["DM", "GROUP_DM"].includes(channel.type);
 	}
 
-	protected _regex(item: User | Channel | Emoji | Role | GuildMember): RegExp {
-		return item instanceof Emoji
-			? /<a?:[a-zA-Z0-9_]+:(\d{17,19})>/
-			: item instanceof Channel
-			? /<#(\d{17,19})>/
-			: item instanceof User || item instanceof GuildMember
-			? /<@!?(\d{17,19})>/
-			: /<@&(\d{17,19})>/;
+	public pagination(
+		message: Message,
+		pages: MessageEmbed[],
+		buttons: MessageButton[],
+		timeout = 12e4,
+		pageNumber = 1
+	) {
+		let page = pageNumber;
+		const ids = buttons.map((c) => c.customId);
+
+		const filter = (i: Interaction) =>
+			i.isButton() && i.inGuild() && i.guildId === message.guildId && ids.includes(i.customId);
+		const collector = message.channel.createMessageComponentCollector({
+			time: timeout,
+			filter,
+		});
+
+		collector.on("collect", async (buttonInteraction: ButtonInteraction) => {
+			switch (buttonInteraction.customId) {
+				case ids[0]:
+					page = page === 1 ? pages.length : page - 1;
+					break;
+				case ids[2]:
+					page = page === pages.length ? 1 : page + 1;
+					break;
+				case ids[1]:
+					await message.delete().catch(() => void 0);
+					collector.stop("deleted");
+					break;
+				default:
+					break;
+			}
+
+			await buttonInteraction.deferUpdate().catch(() => void 0);
+			await message
+				.edit({
+					embeds: [pages[page - 1].setFooter(`Page ${page} / ${pages.length}`)],
+				})
+				.catch(() => void 0);
+		});
+
+		collector.on("end", (_, reason) => {
+			if (reason === "deleted") return;
+
+			const disabledRow = new MessageActionRow().addComponents(
+				buttons[0].setDisabled(true),
+				buttons[1].setDisabled(true),
+				buttons[2].setDisabled(true)
+			);
+
+			message
+				.edit({
+					embeds: [pages[page - 1].setFooter(`Page ${page} / ${pages.length}`)],
+					components: [disabledRow],
+				})
+				.catch(() => void 0);
+		});
 	}
 
 	public async awaitComponent(
