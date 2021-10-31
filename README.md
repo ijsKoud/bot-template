@@ -1,6 +1,6 @@
 <h1 align="center">bot-template</h1>
 
-> Personal discord bot template by DaanGamesDG
+Personal discord bot template by DaanGamesDG
 
 ## Install
 
