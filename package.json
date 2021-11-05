@@ -8,7 +8,7 @@
 	"private": false,
 	"dependencies": {
 		"@daangamesdg/logger": "^1.1.0",
-		"@prisma/client": "^3.4.0",
+		"@prisma/client": "^3.4.1",
 		"@sapphire/decorators": "^3.1.3",
 		"@sapphire/framework": "^2.1.3",
 		"@sapphire/plugin-subcommands": "^2.0.1",
@@ -33,6 +33,6 @@
 		"generate-types": "prisma generate"
 	},
 	"devDependencies": {
-		"prisma": "^3.4.0"
+		"prisma": "^3.4.1"
 	}
 }
