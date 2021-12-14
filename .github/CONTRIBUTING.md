@@ -1,6 +1,6 @@
 ## Contributing
 
-**The issue page is only for bug reports. For questions, suggestions or support, join [the Stereo Support server](https://stereo-bot.tk/discord) and DM DaanGamesDG#7621 for help.**
+**The issue page is only for bug reports. For questions, suggestions or support, join [this Discord server](https://daangamesdg.xyz/discord) and DM DaanGamesDG#7621 for help.**
 
 When you open an issue for bug reports we expect you to provide useful information such as:
 
