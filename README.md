@@ -11,7 +11,7 @@
     </a>
   </p>
 
-  <a href="https://stereo-bot.tk/discord" target="_blank">
+  <a href="https://daangamesdg.xyz/discord" target="_blank">
     <img src="https://discord.com/api/guilds/828382957310967820/embed.png?style=banner2" />
   </a>
 </div>
