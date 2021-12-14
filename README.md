@@ -1,6 +1,22 @@
-<h1 align="left"><strong>bot-template</strong></h1>
+<div align="center">
+    <img src="https://daangamesdg.xyz/assets/svg/logo.svg" width="100px" />
+    <h1>bot-template</h1>
+  
+  <p>Just like an uncoloured drawing. For bots.</p>
+  
+  <p align="center">
+    <img alt="Version" src="https://img.shields.io/badge/version-1.0.0-blue.svg" />
+    <a href="/LICENSE" target="_blank">
+      <img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-yellow.svg" />
+    </a>
+  </p>
 
-Bot template for Discord bot projects made by DaanGamesDG
+  <a href="https://stereo-bot.tk/discord" target="_blank">
+    <img src="https://discord.com/api/guilds/828382957310967820/embed.png?style=banner2" />
+  </a>
+</div>
+
+---
 
 ## Information
 
@@ -10,16 +26,16 @@ Bot template for Discord bot projects made by DaanGamesDG
 
 ## Install
 
-**Installation guide here**
+This project is WIP, please come back later for a guide on how to host this bot yourself.
 
 ## Author
 
 👤 **DaanGamesDG**
 
-- Website: https://daangamesdg.xyz/
-- Email: <daan@daangamesdg.xyz>
-- Twitter: [@DaanGamesDG](https://twitter.com/DaanGamesDG)
-- Github: [@DaanGamesDG](https://github.com/DaanGamesDG)
+-   Website: https://daangamesdg.xyz/
+-   Email: <daan@daangamesdg.xyz>
+-   Twitter: [@DaanGamesDG](https://twitter.com/DaanGamesDG)
+-   Github: [@DaanGamesDG](https://github.com/DaanGamesDG)
 
 ## Donate
 
