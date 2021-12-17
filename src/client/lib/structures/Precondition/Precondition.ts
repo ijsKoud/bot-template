@@ -19,7 +19,7 @@ export abstract class Precondition extends SapphirePrecondition {
 }
 
 export namespace Precondition {
-	export type Context<O = {}> = PreconditionContext & O;
+	export type Context<O = Record<PropertyKey, unknown>> = PreconditionContext & O;
 	export type Result = PreconditionResult;
 	export type AsyncResult = AsyncPreconditionResult;
 }
