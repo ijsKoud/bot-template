@@ -12,7 +12,7 @@
   </p>
 
   <a href="https://daangamesdg.xyz/discord" target="_blank">
-    <img src="https://discord.com/api/guilds/828382957310967820/embed.png?style=banner2" />
+    <img src="https://daangamesdg.xyz/discord/banner" />
   </a>
 </div>
 
