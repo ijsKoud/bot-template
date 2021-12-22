@@ -1,4 +1,4 @@
 {
-	"**/*.{js,jsx,ts,tsx,json}": ["yarn lint .", "prettier src --write"],
+	"**/*.{js,jsx,ts,tsx}": ["yarn lint .", "prettier src --write"],
 	"**/*.prisma": ["prisma format ."]
 }
