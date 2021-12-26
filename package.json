@@ -7,8 +7,8 @@
 	"author": "DaanGamesDG <daan@daangamesdg.xyz>",
 	"license": "MIT",
 	"devDependencies": {
-		"@commitlint/cli": "^15.0.0",
-		"@commitlint/config-angular": "^15.0.0",
+		"@commitlint/cli": "^16.0.0",
+		"@commitlint/config-angular": "^16.0.0",
 		"@sapphire/eslint-config": "^4.0.8",
 		"@sapphire/prettier-config": "^1.2.7",
 		"@sapphire/ts-config": "^3.1.6",
