@@ -10,15 +10,24 @@ const ignoredCodes = [RESTJSONErrorCodes.UnknownChannel, RESTJSONErrorCodes.Unkn
 
 @ApplyOptions<Listener.Options>({ event: "chatInputCommandError" })
 export default class extends Listener {
-	public run(error: Error, { interaction, command }: ChatInputCommandErrorPayload) {
+	public async run(error: Error, { interaction, command }: ChatInputCommandErrorPayload) {
 		const author = interaction.user.id;
 		const reply = interaction.replied ? interaction.followUp.bind(interaction) : interaction.reply.bind(interaction);
 		const errorEmoji = emojis.error;
 
 		// If string || UserError, send to user
-		if (typeof error === "string") return reply(`>>> ${errorEmoji} | ${error}`);
-		if (error instanceof ArgumentError) return reply(`>>> ${errorEmoji} | ${error.message}`);
-		if (error instanceof UserError) return reply(`>>> ${errorEmoji} | ${error.message}`);
+		if (typeof error === "string") {
+			await reply(`>>> ${errorEmoji} | ${error}`);
+			return;
+		}
+		if (error instanceof ArgumentError) {
+			await reply(`>>> ${errorEmoji} | ${error.message}`);
+			return;
+		}
+		if (error instanceof UserError) {
+			await reply(`>>> ${errorEmoji} | ${error.message}`);
+			return;
+		}
 
 		if (error.name === "AbortError" || error.message === "Internal Server Error") {
 			this.container.logger.warn(
@@ -27,9 +36,10 @@ export default class extends Listener {
 				}`
 			);
 
-			return reply(
+			await reply(
 				`>>> ${errorEmoji} | Oh no, this doesn't look very good. Something caused the request to abort their mission, please try again.`
 			);
+			return;
 		}
 
 		// checks if error is DiscordAPIError || HTTPError
@@ -47,12 +57,10 @@ export default class extends Listener {
 		this.container.logger.fatal(`[COMMAND] ${command.location.relative}\n${error.stack || error.message}`);
 
 		try {
-			return reply(this.generateUnexpectedErrorinteraction(author, error));
+			await reply(this.generateUnexpectedErrorinteraction(author, error));
 		} catch (err) {
 			this.container.client.emit(Events.Error, err);
 		}
-
-		return undefined;
 	}
 
 	private isSilencedError(channelId: string, guild: string | null, error: DiscordAPIError | HTTPError) {

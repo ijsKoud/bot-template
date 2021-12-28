@@ -10,14 +10,23 @@ const ignoredCodes = [RESTJSONErrorCodes.UnknownChannel, RESTJSONErrorCodes.Unkn
 
 @ApplyOptions<Listener.Options>({ event: "messageCommandError" })
 export default class extends Listener {
-	public run(error: Error, { message, command }: MessageCommandErrorPayload) {
+	public async run(error: Error, { message, command }: MessageCommandErrorPayload) {
 		const author = message.author.id;
 		const errorEmoji = emojis.error;
 
 		// If string || UserError, send to user
-		if (typeof error === "string") return message.reply(`>>> ${errorEmoji} | ${error}`);
-		if (error instanceof ArgumentError) return message.reply(`>>> ${errorEmoji} | ${error.message}`);
-		if (error instanceof UserError) return message.reply(`>>> ${errorEmoji} | ${error.message}`);
+		if (typeof error === "string") {
+			await message.reply(`>>> ${errorEmoji} | ${error}`);
+			return;
+		}
+		if (error instanceof ArgumentError) {
+			await message.reply(`>>> ${errorEmoji} | ${error}`);
+			return;
+		}
+		if (error instanceof UserError) {
+			await message.reply(`>>> ${errorEmoji} | ${error}`);
+			return;
+		}
 
 		if (error.name === "AbortError" || error.message === "Internal Server Error") {
 			this.container.logger.warn(
@@ -26,9 +35,10 @@ export default class extends Listener {
 				}`
 			);
 
-			return message.reply(
+			await message.reply(
 				`>>> ${errorEmoji} | Oh no, this doesn't look very good. Something caused the request to abort their mission, please try again.`
 			);
+			return;
 		}
 
 		// checks if error is DiscordAPIError || HTTPError
@@ -46,12 +56,10 @@ export default class extends Listener {
 		this.container.logger.fatal(`[COMMAND] ${command.location.relative}\n${error.stack || error.message}`);
 
 		try {
-			return message.reply(this.generateUnexpectedErrorMessage(author, error));
+			await message.reply(this.generateUnexpectedErrorMessage(author, error));
 		} catch (err) {
 			this.container.client.emit(Events.Error, err);
 		}
-
-		return undefined;
 	}
 
 	private isSilencedError(channelId: string, guild: string | null, error: DiscordAPIError | HTTPError) {

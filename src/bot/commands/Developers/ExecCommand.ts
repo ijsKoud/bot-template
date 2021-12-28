@@ -52,15 +52,20 @@ export default class extends Command {
 
 		const { result, success } = await this.exec(command);
 		const output = success ? codeBlock("bash", result) : `**Error**: ${codeBlock("bash", result)}`;
-		if (silent) return interaction.followUp({ content: "Executed!", ephemeral: true });
+		if (silent) {
+			await interaction.followUp({ content: "Executed!", ephemeral: true });
+			return;
+		}
 
-		if (output.length > 2000)
-			return interaction.followUp({
+		if (output.length > 2000) {
+			await interaction.followUp({
 				files: [{ attachment: Buffer.from(output), name: "output.txt" }],
 				content: "Output was too long... sent the result as a file."
 			});
+			return;
+		}
 
-		return interaction.followUp(`${output}`);
+		await interaction.followUp(`${output}`);
 	}
 
 	private async exec(command: string) {

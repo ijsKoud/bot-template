@@ -85,17 +85,22 @@ export default class extends Command {
 		});
 
 		const output = success ? codeBlock("js", result) : `**Error**: ${codeBlock("bash", result)}`;
-		if (interaction.options.getBoolean("silent")) return interaction.followUp({ content: "Executed!", ephemeral: true });
+		if (interaction.options.getBoolean("silent")) {
+			await interaction.followUp({ content: "Executed!", ephemeral: true });
+			return;
+		}
 
 		const typeFooter = `**Type**: ${codeBlock("typescript", type)}`;
 
-		if (output.length > 2000)
-			return interaction.followUp({
+		if (output.length > 2000) {
+			await interaction.followUp({
 				files: [{ attachment: Buffer.from(output), name: "output.txt" }],
 				content: `Output was too long... sent the result as a file.\n\n${typeFooter}`
 			});
+			return;
+		}
 
-		return interaction.followUp(`${output}\n${typeFooter}`);
+		await interaction.followUp(`${output}\n${typeFooter}`);
 	}
 
 	private async eval(msg: Message | CommandInteraction, code: string, flags: { async: boolean; depth: number; showHidden: boolean }) {
