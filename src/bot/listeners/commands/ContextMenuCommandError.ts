@@ -10,15 +10,24 @@ const ignoredCodes = [RESTJSONErrorCodes.UnknownChannel, RESTJSONErrorCodes.Unkn
 
 @ApplyOptions<Listener.Options>({ event: "contextMenuCommandError" })
 export default class extends Listener {
-	public run(error: Error, { interaction, command }: ContextMenuCommandErrorPayload) {
+	public async run(error: Error, { interaction, command }: ContextMenuCommandErrorPayload) {
 		const author = interaction.user.id;
 		const reply = interaction.replied ? interaction.followUp.bind(interaction) : interaction.reply.bind(interaction);
 		const errorEmoji = emojis.error;
 
 		// If string || UserError, send to user
-		if (typeof error === "string") return reply({ content: `>>> ${errorEmoji} | ${error}`, ephemeral: true });
-		if (error instanceof ArgumentError) return reply({ content: `>>> ${errorEmoji} | ${error.message}`, ephemeral: true });
-		if (error instanceof UserError) return reply({ content: `>>> ${errorEmoji} | ${error.message}`, ephemeral: true });
+		if (typeof error === "string") {
+			await reply({ content: `>>> ${errorEmoji} | ${error}`, ephemeral: true });
+			return;
+		}
+		if (error instanceof ArgumentError) {
+			await reply({ content: `>>> ${errorEmoji} | ${error.message}`, ephemeral: true });
+			return;
+		}
+		if (error instanceof UserError) {
+			await reply({ content: `>>> ${errorEmoji} | ${error.message}`, ephemeral: true });
+			return;
+		}
 
 		if (error.name === "AbortError" || error.message === "Internal Server Error") {
 			this.container.logger.warn(
@@ -27,10 +36,11 @@ export default class extends Listener {
 				}`
 			);
 
-			return reply({
+			await reply({
 				content: `>>> ${errorEmoji} | Oh no, this doesn't look very good. Something caused the request to abort their mission, please try again.`,
 				ephemeral: true
 			});
+			return;
 		}
 
 		// checks if error is DiscordAPIError || HTTPError
@@ -48,12 +58,10 @@ export default class extends Listener {
 		this.container.logger.fatal(`[COMMAND] ${command.location.relative}\n${error.stack || error.message}`);
 
 		try {
-			return reply({ content: this.generateUnexpectedErrorinteraction(author, error), ephemeral: true });
+			await reply({ content: this.generateUnexpectedErrorinteraction(author, error), ephemeral: true });
 		} catch (err) {
 			this.container.client.emit(Events.Error, err);
 		}
-
-		return undefined;
 	}
 
 	private isSilencedError(channelId: string, guild: string | null, error: DiscordAPIError | HTTPError) {

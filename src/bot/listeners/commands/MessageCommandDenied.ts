@@ -4,10 +4,10 @@ import { Listener } from "../../../client";
 
 @ApplyOptions<Listener.Options>({ event: "messageCommandDenied" })
 export default class extends Listener {
-	public run({ context, message: content }: UserError, payload: MessageCommandDeniedPayload) {
+	public async run({ context, message: content }: UserError, payload: MessageCommandDeniedPayload) {
 		if (Reflect.get(Object(context), "silent")) return;
 
-		return payload.message.reply({
+		await payload.message.reply({
 			content,
 			allowedMentions: { repliedUser: true }
 		});
