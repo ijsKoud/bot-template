@@ -159,7 +159,7 @@ export class Utils {
 			await buttonInteraction.deferUpdate().catch(() => void 0);
 			await message
 				.edit({
-					embeds: [pages[page - 1].setFooter(`Page ${page} / ${pages.length}`)]
+					embeds: [pages[page - 1].setFooter({ text: `Page ${page} / ${pages.length}` })]
 				})
 				.catch(() => void 0);
 		});
@@ -175,7 +175,7 @@ export class Utils {
 
 			message
 				.edit({
-					embeds: [pages[page - 1].setFooter(`Page ${page} / ${pages.length}`)],
+					embeds: [pages[page - 1].setFooter({ text: `Page ${page} / ${pages.length}` })],
 					components: [disabledRow]
 				})
 				.catch(() => void 0);
