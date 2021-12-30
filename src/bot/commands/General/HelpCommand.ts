@@ -42,10 +42,10 @@ export default class extends Command {
 	}
 
 	private RunCommand(context: Command.MessageContext | Command.SlashCommandContext, user: User, command?: Command): MessageEmbed {
-		const embed = this.client.utils
-			.embed()
-			.setTitle(`Help Command - ${user.tag}`)
-			.setFooter("Bot created by DaanGamesDG#7621", "https://static.daangamesdg.xyz/discord/pfp.gif");
+		const embed = this.client.utils.embed().setTitle(`Help Command - ${user.tag}`).setFooter({
+			text: "Bot created by DaanGamesDG#7621",
+			iconURL: "https://static.daangamesdg.xyz/discord/pfp.gif"
+		});
 
 		if (command) {
 			const userPermissions = this.client.utils.formatPerms(command.permissions);
