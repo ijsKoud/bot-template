@@ -21,7 +21,6 @@
 		"prisma": "^3.7.0"
 	},
 	"dependencies": {
-		"@daangamesdg/logger": "^1.1.0",
 		"@daangamesdg/sapphire-logger": "^1.0.2",
 		"@prisma/client": "^3.7.0",
 		"@sapphire/decorators": "^3.1.4",
