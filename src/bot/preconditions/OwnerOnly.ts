@@ -2,7 +2,7 @@ import type { CommandInteraction, ContextMenuInteraction, Interaction, Message }
 import { Precondition } from "../../client";
 
 export default class extends Precondition {
-	public run(message: Message): Precondition.Result {
+	public messageRun(message: Message): Precondition.Result {
 		return this.client.owners.includes(message.author.id)
 			? this.ok()
 			: this.error({
